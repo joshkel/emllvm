@@ -1,6 +1,6 @@
 from os.path import dirname, join, normpath
 
-from .commands import Download
+from .commands import Download, Untar
 from .executor import Executor
 
 def make_executor():
@@ -16,8 +16,11 @@ def main():
 
     executor.execute([
         Download(llvm_releases + 'llvm-%s.src.tar.xz' % version),
+        Untar('llvm'),
         Download(llvm_releases + 'cfe-%s.src.tar.xz' % version),
+        Untar('llvm/tools/clang'),
         Download(llvm_releases + 'clang-tools-extra-%s.src.tar.xz' % version),
+        Untar('llvm/tools/clang/tools/extra'),
     ])
 
 main()
