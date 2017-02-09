@@ -14,6 +14,13 @@ def main():
 
     executor = make_executor()
 
+    # TODO:
+    # Because we're cross-compiling, we need native versions of some LLVM/Clang
+    # binaries. Default to latest versions under /usr/bin
+    # Find /usr/bin/llvm-tblgen*
+    # Find /usr/bin/clang-tblgen*
+    # Verify cmake --version, emcc --version, em++ --version
+
     executor.execute([
         Download(llvm_releases + 'llvm-%s.src.tar.xz' % version),
         Untar('llvm'),
@@ -22,5 +29,13 @@ def main():
         Download(llvm_releases + 'clang-tools-extra-%s.src.tar.xz' % version),
         Untar('llvm/tools/clang/tools/extra'),
     ])
+
+    # TODO:
+    # Add needed patches
+
+    # TODO:
+    # mkdir -p build
+    # cd build && CXX=em++ CC=emcc cmake -DCMAKE_TOOLCHAIN_FILE=$(EMSCRIPTEN)/cmake/Modules/Platform/Emscripten.cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DLLVM_TABLEGEN=$(LLVM_TABLEGEN) -DCLANG_TABLEGEN=$(CLANG_TABLEGEN) ../llvm
+    # cd build && make
 
 main()
