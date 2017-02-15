@@ -1,6 +1,7 @@
 class Config(object):
     pass
 
+
 class Executor(object):
     def __init__(self):
         self.config = Config()

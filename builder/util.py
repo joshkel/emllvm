@@ -1,6 +1,7 @@
 import os.path
 from urllib.request import urlopen
 
+
 def download(url, file_name=None, block_size=8192):
     """Downloads a file over HTTP.
 
@@ -24,4 +25,3 @@ def download(url, file_name=None, block_size=8192):
             f.write(buffer)
             status = r"%10d  [%6.2f%%]" % (file_size_dl, file_size_dl * 100 / file_size)
             print(status, end='\r')
-
