@@ -1,7 +1,8 @@
 from os.path import dirname, join, normpath
 import sys
 
-from .commands import CommandError, CheckPrereq, Download, FindClang, Untar
+from .commands import CommandError, CheckPrereq, Configure, Download, FindClang, Make, \
+    MakeBuildDirectory, Untar
 from .executor import Executor
 
 emscripten_message = (
@@ -35,22 +36,16 @@ def main():
             Untar('llvm/tools/clang'),
             Download(llvm_releases + 'clang-tools-extra-%s.src.tar.xz' % version),
             Untar('llvm/tools/clang/tools/extra'),
+            # TODO:
+            # Add needed patches
+            MakeBuildDirectory(),
+            Configure(),
+            Make()
         ])
     except CommandError as e:
         # CommandError indicates that the command did its own error
         # handling.  Report failure, but don't show a stack trace.
         sys.exit(1)
-
-    # TODO:
-    # Add needed patches
-
-    # TODO:
-    # mkdir -p build
-    # cd build && CXX=em++ CC=emcc cmake \
-    #     -DCMAKE_TOOLCHAIN_FILE=$(EMSCRIPTEN)/cmake/Modules/Platform/Emscripten.cmake \
-    #     -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
-    #     -DLLVM_TABLEGEN=$(LLVM_TABLEGEN) -DCLANG_TABLEGEN=$(CLANG_TABLEGEN) ../llvm
-    # cd build && make
 
 
 main()

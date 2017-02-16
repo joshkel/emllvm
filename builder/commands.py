@@ -123,3 +123,35 @@ class FindClang(Command):
                       file=sys.stderr)
                 print('Please install an appropriate Clang version to /usr/bin.')
                 raise CommandError
+
+
+class MakeBuildDirectory(Command):
+    def build_dir(self):
+        return os.path.join(self.config.root, 'build')
+
+    def execute(self):
+        self.config.build = self.build_dir()
+        os.makedirs(self.build_dir(), exist_ok=True)
+
+
+class Configure(Command):
+    def execute(self):
+        os.chdir(self.config.build)
+        os.environ['CXX'] = 'em++'
+        os.environ['CC'] = 'emcc'
+        subprocess.check_call([
+            'cmake',
+            '-DCMAKE_TOOLCHAIN_FILE=%s/cmake/Modules/Platform/Emscripten.cmake'
+            % os.environ['EMSCRIPTEN'],
+            '-G', 'Unix Makefiles',
+            '-DCMAKE_BUILD_TYPE=Release',
+            '-DLLVM_TABLEGEN=%s' % FindClang.tool['llvm-tblgen'],
+            '-DCLANG_TABLEGEN=%s' % FindClang.tool['clang-tblgen'],
+            '../llvm'
+        ])
+
+
+class Make(Command):
+    def execute(self):
+        os.chdir(self.config.build)
+        subprocess.check_call(['make'])
