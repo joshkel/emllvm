@@ -1,7 +1,7 @@
 from os.path import dirname, join, normpath
 import sys
 
-from .commands import CommandError, CheckPrereq, Download, Untar
+from .commands import CommandError, CheckPrereq, Download, FindClang, Untar
 from .executor import Executor
 
 emscripten_message = (
@@ -23,17 +23,12 @@ def main():
 
     executor = make_executor()
 
-    # TODO:
-    # Because we're cross-compiling, we need native versions of some LLVM/Clang
-    # binaries. Default to latest versions under /usr/bin
-    # Find /usr/bin/llvm-tblgen*
-    # Find /usr/bin/clang-tblgen*
-
     try:
         executor.execute([
             CheckPrereq('cmake --version', package='cmake'),
             CheckPrereq('emcc --version', custom_message=emscripten_message),
             CheckPrereq('em++ --version', custom_message=emscripten_message),
+            FindClang(),
             Download(llvm_releases + 'llvm-%s.src.tar.xz' % version),
             Untar('llvm'),
             Download(llvm_releases + 'cfe-%s.src.tar.xz' % version),

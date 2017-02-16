@@ -99,3 +99,27 @@ class Untar(Command):
 
     def rollback(self):
         shutil.rmtree(self.local_path())
+
+
+class FindClang(Command):
+    """
+    Because we're cross-compiling, we need native versions of some LLVM/Clang binaries.
+
+    We currently default to the latest versions under /usr/bin.
+    """
+
+    tool = {}
+
+    def execute(self):
+        for tool in ['llvm-tblgen', 'clang-tblgen']:
+            try:
+                # For now, default to latest version under /usr/bin.
+                found = subprocess.check_output('ls /usr/bin/%s*' % tool, shell=True)
+                self.tool[tool] = sorted(found.decode('utf-8').split('\n'))[-1]
+                print('Found %s' % self.tool[tool])
+            except subprocess.CalledProcessError:
+                print('Failed to find %s' % tool, file=sys.stderr)
+                print('Native versions of Clang tools are required to cross-compile LLVM.',
+                      file=sys.stderr)
+                print('Please install an appropriate Clang version to /usr/bin.')
+                raise CommandError
