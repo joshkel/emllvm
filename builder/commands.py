@@ -135,6 +135,9 @@ class MakeBuildDirectory(Command):
 
 
 class Configure(Command):
+    def check(self):
+        return os.path.exists(os.path.join(self.config.build, 'Makefile'))
+
     def execute(self):
         os.chdir(self.config.build)
         os.environ['CXX'] = 'em++'
