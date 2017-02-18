@@ -147,9 +147,15 @@ class Configure(Command):
             '-DCMAKE_TOOLCHAIN_FILE=%s/cmake/Modules/Platform/Emscripten.cmake'
             % os.environ['EMSCRIPTEN'],
             '-G', 'Unix Makefiles',
+
+            # Emscripten strongly recommends release builds to get decent
+            # performance.
             '-DCMAKE_BUILD_TYPE=Release',
+
+            # Cross-compiling requires some native Clang binaries.
             '-DLLVM_TABLEGEN=%s' % FindClang.tool['llvm-tblgen'],
             '-DCLANG_TABLEGEN=%s' % FindClang.tool['clang-tblgen'],
+
             '../llvm'
         ])
 
