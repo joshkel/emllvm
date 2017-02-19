@@ -2,4 +2,5 @@ build/
 downloads/
 env/
 llvm/
+llvm.orig/
 **/__pycache__/
