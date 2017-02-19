@@ -7,6 +7,10 @@ import sys
 from .util import download
 
 
+host_cc = os.environ.get('CC', 'gcc')
+host_cxx = os.environ.get('CXX', 'g++')
+
+
 class CommandError(Exception):
     pass
 
@@ -155,6 +159,11 @@ class Configure(Command):
             # Cross-compiling requires some native Clang binaries.
             '-DLLVM_TABLEGEN=%s' % FindClang.tool['llvm-tblgen'],
             '-DCLANG_TABLEGEN=%s' % FindClang.tool['clang-tblgen'],
+
+            # Native/host tools should use the native/host compiler,
+            # NOT Emscripten.
+            '-DCROSS_TOOLCHAIN_FLAGS_NATIVE=-DCMAKE_C_COMPILER=%s;-DCMAKE_CXX_COMPILER=%s'
+            % (host_cc, host_cxx),
 
             '../llvm'
         ])
