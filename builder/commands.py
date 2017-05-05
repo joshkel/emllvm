@@ -129,6 +129,29 @@ class FindClang(Command):
                 raise CommandError
 
 
+class Patch(Command):
+    def __init__(self, patch_file):
+        self.patch_file = patch_file
+
+    def patch_path(self):
+        return os.path.join(self.config.root, 'patches', self.patch_file)
+
+    def check(self):
+        # If a reversed patch would succeed, then the patch has been applied.
+        # From https://unix.stackexchange.com/a/86872/615
+        with open(self.patch_path()) as f:
+            return 0 == subprocess.call(['patch', '-p0', '--reverse', '--dry-run'], stdin=f,
+                                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    def execute(self):
+        with open(self.patch_path()) as f:
+            subprocess.check_call(['patch', '-p0', '--backup'], stdin=f)
+
+    def rollback(self):
+        with open(self.patch_path()) as f:
+            subprocess.check_call(['patch', '-p0', '--reverse'], stdin=f)
+
+
 class MakeBuildDirectory(Command):
     def build_dir(self):
         return os.path.join(self.config.root, 'build')

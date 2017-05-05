@@ -7,8 +7,11 @@
 
 1. Install prerequisites.
    * [Emscripten](http://emscripten.org/)
-   * Clang - emllvm has been tested against Clang 3.9 and currently assumes that Clang binaries are available under `/usr/bin` and has been tested against Clang 3.9.
-   * CMake - Currently, version 3.4.3 or newer is required.  See [LLVM documentation](http://llvm.org/docs/CMake.html) for details.
+   * Clang - emllvm has been tested against Clang 3.9 and currently assumes
+     that Clang binaries are available under `/usr/bin` and has been tested
+     against Clang 3.9.
+   * CMake - Currently, version 3.4.3 or newer is required.  See [LLVM
+     documentation](http://llvm.org/docs/CMake.html) for details.
 2. Run the build script.
 
     ```
@@ -19,4 +22,5 @@
 ## Further reading
 
 * http://llvm.org/docs/HowToCrossCompileLLVM.html
-* https://github.com/kripken/llvm.js - may be outdated, but it has some useful info
+* https://github.com/kripken/llvm.js - may be outdated, but it has some useful
+  info

@@ -2,7 +2,7 @@ from os.path import dirname, join, normpath
 import sys
 
 from .commands import CommandError, CheckPrereq, Configure, Download, FindClang, Make, \
-    MakeBuildDirectory, Untar
+    MakeBuildDirectory, Patch, Untar
 from .executor import Executor
 
 emscripten_message = (
@@ -36,8 +36,7 @@ def main():
             Untar('llvm/tools/clang'),
             Download(llvm_releases + 'clang-tools-extra-%s.src.tar.xz' % version),
             Untar('llvm/tools/clang/tools/extra'),
-            # TODO:
-            # Add needed patches
+            Patch('llvm-%s.patch' % version),
             MakeBuildDirectory(),
             Configure(),
             Make()
