@@ -36,7 +36,7 @@ def main():
             Untar('llvm/tools/clang'),
             Download(llvm_releases + 'clang-tools-extra-%s.src.tar.xz' % version),
             Untar('llvm/tools/clang/tools/extra'),
-            Patch('llvm-%s.patch' % version),
+            Patch(['llvm-%s.patch' % version, 'pthread_sigmask.patch']),
             MakeBuildDirectory(),
             Configure(),
             Make()

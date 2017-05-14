@@ -4,3 +4,4 @@ env/
 llvm/
 llvm.orig/
 **/__pycache__/
+emsdk-portable

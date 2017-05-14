@@ -1,0 +1,28 @@
+diff -ur llvm.orig/lib/Support/Unix/Process.inc llvm/lib/Support/Unix/Process.inc
+--- llvm.orig/lib/Support/Unix/Process.inc	2016-05-04 12:56:51.000000000 -0400
++++ llvm/lib/Support/Unix/Process.inc	2017-05-13 11:17:15.682268600 -0400
+@@ -252,8 +252,11 @@
+   if (sigfillset(&FullSet) < 0)
+     return std::error_code(errno, std::generic_category());
+   // Atomically swap our current signal mask with a full mask.
+-  sigset_t SavedSet;
+-#if LLVM_ENABLE_THREADS
++  sigset_t SavedSet __attribute__((maybe_unused));
++#if __EMSCRIPTEN__
++  // Emscripten doesn't support signals, so we don't need to block signals.
++  // See https://kripken.github.io/emscripten-site/docs/porting/pthreads.html
++#elif LLVM_ENABLE_THREADS
+   if (int EC = pthread_sigmask(SIG_SETMASK, &FullSet, &SavedSet))
+     return std::error_code(EC, std::generic_category());
+ #else
+@@ -268,7 +271,9 @@
+     ErrnoFromClose = errno;
+   // Restore the signal mask back to what we saved earlier.
+   int EC = 0;
+-#if LLVM_ENABLE_THREADS
++#if __EMSCRIPTEN__
++  // No need to block signals - see above
++#elif LLVM_ENABLE_THREADS
+   EC = pthread_sigmask(SIG_SETMASK, &SavedSet, nullptr);
+ #else
+   if (sigprocmask(SIG_SETMASK, &SavedSet, nullptr) < 0)

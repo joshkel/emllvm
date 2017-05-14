@@ -12,15 +12,19 @@
      against Clang 3.9.
    * CMake - Currently, version 3.4.3 or newer is required.  See [LLVM
      documentation](http://llvm.org/docs/CMake.html) for details.
-2. Run the build script.
+2. Optionally, create a symlink to `emsdk-portable` (or place the
+   `emsdk-portable` directory in the `emllvm` directory) so that the build script
+   can automatically find it.
+3. Run the build script.
 
     ```
     cd emllvm
-    python3 -m builder
+    ./build.sh
     ```
 
 ## Further reading
 
 * http://llvm.org/docs/HowToCrossCompileLLVM.html
+* http://llvm.org/docs/CMake.html
 * https://github.com/kripken/llvm.js - may be outdated, but it has some useful
   info

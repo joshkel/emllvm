@@ -130,26 +130,30 @@ class FindClang(Command):
 
 
 class Patch(Command):
-    def __init__(self, patch_file):
-        self.patch_file = patch_file
+    def __init__(self, patch_files):
+        self.patch_files = patch_files
 
-    def patch_path(self):
-        return os.path.join(self.config.root, 'patches', self.patch_file)
+    def patch_path(self, patch_file):
+        return os.path.join(self.config.root, 'patches', patch_file)
 
-    def check(self):
+    def is_applied(self, patch_file):
         # If a reversed patch would succeed, then the patch has been applied.
         # From https://unix.stackexchange.com/a/86872/615
-        with open(self.patch_path()) as f:
+        with open(self.patch_path(patch_file)) as f:
             return 0 == subprocess.call(['patch', '-p0', '--reverse', '--dry-run'], stdin=f,
                                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     def execute(self):
-        with open(self.patch_path()) as f:
-            subprocess.check_call(['patch', '-p0', '--backup'], stdin=f)
+        for patch_file in self.patch_files:
+            if not self.is_applied(patch_file):
+                with open(self.patch_path(patch_file)) as f:
+                    subprocess.check_call(['patch', '-p0', '--backup'], stdin=f)
 
     def rollback(self):
-        with open(self.patch_path()) as f:
-            subprocess.check_call(['patch', '-p0', '--reverse'], stdin=f)
+        for patch_file in self.patch_files:
+            if self.is_applied(patch_file):
+                with open(self.patch_path(patch_files)) as f:
+                    subprocess.check_call(['patch', '-p0', '--reverse'], stdin=f)
 
 
 class MakeBuildDirectory(Command):
